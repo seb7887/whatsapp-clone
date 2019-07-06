@@ -1,0 +1,18 @@
+{
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rulesDirectory": ["tslint-plugin-prettier", "tslint-microsoft-contrib"],
+  "rules": {
+    "prettier": true,
+    "interface-name": true,
+    "deprecation": false,
+    "interface-over-type-literal": true,
+    "no-console": false,
+    "object-literal-sort-keys": false,
+    "ordered-imports": false,
+    "no-var-requires": false,
+    "member-access": false
+  },
+  "linterOptions": {
+    "exclude": ["node_modules/**/*.ts", "*.json", "**/*.json"]
+  }
+}
