@@ -1,0 +1,51 @@
+.chat-list {
+  height: calc(100% - 56px);
+  overflow-y: overlay;
+}
+
+.list {
+  padding: 0;
+}
+
+.item {
+  height: 76px;
+  padding: 0 15px;
+  display: flex;
+}
+
+.picture {
+  height: 50px;
+  width: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.info {
+  width: calc(100% - 60px);
+  height: 46px;
+  padding: 15px 0;
+  margin-left: 10px;
+  border-bottom: 0.5px solid silver;
+  position: relative;
+
+  &__name {
+    margin-top: 5px;
+  }
+
+  &__content {
+    color: grey;
+    font-size: 1rem;
+    margin-top: 5px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  &__date {
+    position: absolute;
+    color: grey;
+    top: 20px;
+    right: 0;
+    font-size: 0.8rem;
+  }
+}
