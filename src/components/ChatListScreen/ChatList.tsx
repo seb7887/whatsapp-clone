@@ -4,12 +4,35 @@ import { List, ListItem } from '@material-ui/core';
 import { IChats } from '../../types';
 import { API_URL } from '../../config';
 
+const getChatsQuery = `
+  query GetChats {
+    chats {
+      id
+      name
+      picture
+      lastMessage {
+        id
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const ChatList: React.FC = () => {
   const [chats, setChats] = useState<any>([]);
 
   useMemo(async () => {
-    const body = await fetch(`${API_URL}/chats`);
-    const chats: IChats[] = await body.json();
+    const body = await fetch(`${API_URL}/graphql`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ query: getChatsQuery })
+    });
+    const {
+      data: { chats }
+    } = await body.json();
     setChats(chats);
   }, []);
 
