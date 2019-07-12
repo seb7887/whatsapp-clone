@@ -41,13 +41,22 @@ const ChatList: React.FC = () => {
       <List className="list">
         {chats.map((chat: any) => (
           <ListItem key={chat.id} className="item">
-            <img src={chat.picture} alt="Profile" className="picture" />
+            <img
+              src={chat.picture}
+              alt="Profile"
+              className="picture"
+              data-testid="picture"
+            />
             <div className="info">
-              <h3 className="info__name">{chat.name}</h3>
+              <h3 className="info__name" data-testid="name">
+                {chat.name}
+              </h3>
               {chat.lastMessage && (
                 <>
-                  <p className="info__content">{chat.lastMessage.content}</p>
-                  <p className="info__date">
+                  <p className="info__content" data-testid="content">
+                    {chat.lastMessage.content}
+                  </p>
+                  <p className="info__date" data-testid="date">
                     {moment(chat.lastMessage.createdAt).format('HH:mm')}
                   </p>
                 </>

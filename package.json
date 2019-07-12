@@ -14,7 +14,9 @@
     "build": "webpack --env.mode production -p",
     "dev": "webpack-dev-server --env.mode development",
     "prestart": "npm run build",
-    "start": "serve -s dist"
+    "start": "serve -s dist",
+    "test": "jest --watch",
+    "coverage": "jest --coverage"
   },
   "husky": {
     "hooks": {
@@ -32,6 +34,10 @@
   },
   "homepage": "https://github.com/seb7887/whatsapp-clone#readme",
   "devDependencies": {
+    "@testing-library/jest-dom": "^4.0.0",
+    "@testing-library/react": "^8.0.4",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.6.2",
     "@welldone-software/why-did-you-render": "^3.2.1",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^5.0.3",
@@ -39,12 +45,16 @@
     "fast-sass-loader": "^1.5.0",
     "html-webpack-plugin": "^3.2.0",
     "husky": "^3.0.0",
+    "jest": "^24.8.0",
+    "jest-fetch-mock": "^2.1.2",
+    "jest-watch-select-projects": "^0.1.2",
     "lint-staged": "^9.0.2",
     "mini-css-extract-plugin": "^0.7.0",
     "node-sass": "^4.12.0",
     "prettier": "^1.18.2",
     "serve": "^11.0.2",
     "style-loader": "^0.23.1",
+    "ts-jest": "^24.0.2",
     "ts-loader": "^6.0.4",
     "tslint": "^5.18.0",
     "tslint-config-prettier": "^1.18.0",
