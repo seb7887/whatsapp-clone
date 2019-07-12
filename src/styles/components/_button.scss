@@ -1,0 +1,20 @@
+.back-button {
+  svg {
+    color: $primary-text;
+  }
+}
+
+.send-button {
+  min-width: 50px !important;
+  width: 50px !important;
+  border-radius: 50% !important;
+  background-color: $primary-bg !important;
+  margin: 0 5px !important;
+  margin-right: 0 !important;
+  color: white !important;
+  padding-left: 20px !important;
+
+  svg {
+    margin-left: -3px;
+  }
+}

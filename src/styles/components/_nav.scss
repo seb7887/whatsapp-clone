@@ -4,3 +4,25 @@
   font-size: 20px;
   line-height: 40px;
 }
+
+.chat-nav {
+  padding: 0;
+  display: flex;
+  flex-direction: row;
+  background-color: $primary-bg;
+  color: $primary-text;
+
+  &__picture {
+    height: 40px;
+    width: 40px;
+    margin-top: 3px;
+    margin-left: -22px;
+    object-fit: cover;
+    padding: 5px;
+    border-radius: 50%;
+  }
+
+  &__name {
+    line-height: 56px;
+  }
+}

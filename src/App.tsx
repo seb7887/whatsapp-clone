@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Route,
   Redirect,
-  Switch,
   RouteComponentProps
 } from 'react-router-dom';
 import { AnimatedSwitch, spring } from 'react-router-transition';
@@ -11,8 +10,11 @@ import ChatListScreen from './components/ChatListScreen';
 import ChatRoomScreen from './components/ChatRoomScreen';
 
 const redirectToChats = () => <Redirect to="/chats" />;
-const matchComponent = ({ match }: RouteComponentProps<{ chatId: string }>) => (
-  <ChatRoomScreen chatId={match.params.chatId} />
+const matchComponent = ({
+  match,
+  history
+}: RouteComponentProps<{ chatId: string }>) => (
+  <ChatRoomScreen chatId={match.params.chatId} history={history} />
 );
 
 const glide = (val: number) =>

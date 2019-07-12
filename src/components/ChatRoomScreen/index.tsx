@@ -1,5 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
+import { History } from 'history';
+import { IChatQueryMessage, IChatQueryResult } from '../../types';
 import { API_URL } from '../../config';
+import ChatNav from './ChatNav';
+import MessageList from './MessageList';
+import MessageInput from './MessageInput';
 
 const getChatQuery = `
   query GetChat($chatId: ID!) {
@@ -18,23 +23,12 @@ const getChatQuery = `
 
 interface IProps {
   chatId: string;
-}
-interface IChatQueryMessage {
-  id: string;
-  content: string;
-  createdAt: string;
-}
-
-interface IChatQueryResult {
-  id: string;
-  name: string;
-  picture: string;
-  messages: IChatQueryMessage[];
+  history: History;
 }
 
 type OptionalChatQueryResult = IChatQueryResult | null;
 
-const ChatRoomScreen: React.FC<IProps> = ({ chatId }) => {
+const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
   const [chat, setChat] = useState<OptionalChatQueryResult>(null);
 
   useMemo(async () => {
@@ -54,22 +48,35 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId }) => {
     setChat(chat);
   }, [chatId]);
 
+  const onSendMessage = useCallback(
+    (content: string) => {
+      if (!chat) {
+        return null;
+      }
+
+      const message: IChatQueryMessage = {
+        id: (chat.messages.length + 10).toString(),
+        createdAt: Date.now().toString(),
+        content
+      };
+
+      setChat({
+        ...chat,
+        messages: chat.messages.concat(message)
+      });
+    },
+    [chat]
+  );
+
   if (!chat) {
     return null;
   } else {
-    const { picture, name, messages } = chat;
+    const { messages } = chat;
     return (
-      <div data-testid="chat">
-        <img src={picture} alt="Profile" />
-        <div>{name}</div>
-        <ul>
-          {messages.map(message => (
-            <li key={message.id}>
-              <div>{message.content}</div>
-              <div>{message.createdAt}</div>
-            </li>
-          ))}
-        </ul>
+      <div data-testid="chat" className="room">
+        <ChatNav chat={chat} history={history} />
+        {messages && <MessageList messages={messages} />}
+        <MessageInput onSendMessage={onSendMessage} />
       </div>
     );
   }
