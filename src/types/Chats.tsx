@@ -9,4 +9,5 @@ export interface IChats {
   name: string;
   picture: string;
   lastMessage: IMessage;
+  messages: IMessage[];
 }

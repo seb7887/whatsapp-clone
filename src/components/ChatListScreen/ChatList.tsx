@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import moment from 'moment';
+import { History } from 'history';
 import { List, ListItem } from '@material-ui/core';
 import { IChats } from '../../types';
 import { API_URL } from '../../config';
@@ -19,8 +20,12 @@ const getChatsQuery = `
   }
 `;
 
-const ChatList: React.FC = () => {
-  const [chats, setChats] = useState<any>([]);
+interface IProps {
+  history: History;
+}
+
+const ChatList: React.FC<IProps> = ({ history }) => {
+  const [chats, setChats] = useState<IChats[]>([]);
 
   useMemo(async () => {
     const body = await fetch(`${API_URL}/graphql`, {
@@ -36,11 +41,23 @@ const ChatList: React.FC = () => {
     setChats(chats);
   }, []);
 
+  const navToChat = useCallback(
+    (chat: IChats) => {
+      history.push(`chats/${chat.id}`);
+    },
+    [history]
+  );
+
   return (
     <div className="chat-list">
       <List className="list">
         {chats.map((chat: any) => (
-          <ListItem key={chat.id} className="item">
+          <ListItem
+            key={chat.id}
+            className="item"
+            onClick={navToChat.bind(null, chat)}
+            data-testid="chat"
+          >
             <img
               src={chat.picture}
               alt="Profile"

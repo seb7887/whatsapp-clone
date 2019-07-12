@@ -4,7 +4,10 @@ const parts = require('./build-utils/webpack.parts');
 const { PATHS } = require('./build-utils/paths');
 
 const commonConfig = merge([
-  parts.loadTypescript({ include: PATHS.entry, exclude: /node_modules/ })
+  parts.loadTypescript({
+    include: PATHS.entry,
+    exclude: /node_modules/
+  })
 ]);
 
 module.exports = ({ mode }) => {
