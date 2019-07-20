@@ -1,11 +1,12 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
+import gql from 'graphql-tag';
+import { useQuery } from 'react-apollo-hooks';
 import moment from 'moment';
 import { History } from 'history';
 import { List, ListItem } from '@material-ui/core';
 import { IChats } from '../../types';
-import { API_URL } from '../../config';
 
-const getChatsQuery = `
+export const getChatsQuery = gql`
   query GetChats {
     chats {
       id
@@ -25,21 +26,12 @@ interface IProps {
 }
 
 const ChatList: React.FC<IProps> = ({ history }) => {
-  const [chats, setChats] = useState<IChats[]>([]);
+  const { data, loading } = useQuery<any>(getChatsQuery);
+  let chats: any = null;
 
-  useMemo(async () => {
-    const body = await fetch(`${API_URL}/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ query: getChatsQuery })
-    });
-    const {
-      data: { chats }
-    } = await body.json();
-    setChats(chats);
-  }, []);
+  if (!loading) {
+    chats = data.chats;
+  }
 
   const navToChat = useCallback(
     (chat: IChats) => {
@@ -48,6 +40,9 @@ const ChatList: React.FC<IProps> = ({ history }) => {
     [history]
   );
 
+  if (loading) {
+    return null;
+  }
   return (
     <div className="chat-list">
       <List className="list">

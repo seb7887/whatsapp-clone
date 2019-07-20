@@ -1,4 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback } from 'react';
+import gql from 'graphql-tag';
+import { useApolloClient, useQuery } from 'react-apollo-hooks';
 import { History } from 'history';
 import { IChatQueryMessage, IChatQueryResult } from '../../types';
 import { API_URL } from '../../config';
@@ -6,7 +8,7 @@ import ChatNav from './ChatNav';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
 
-const getChatQuery = `
+const getChatQuery = gql`
   query GetChat($chatId: ID!) {
     chat(chatId: $chatId) {
       id
@@ -29,24 +31,17 @@ interface IProps {
 type OptionalChatQueryResult = IChatQueryResult | null;
 
 const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
-  const [chat, setChat] = useState<OptionalChatQueryResult>(null);
+  const client = useApolloClient();
+  const { data, loading } = useQuery<any>(getChatQuery, {
+    variables: { chatId }
+  });
+  let chat: any;
 
-  useMemo(async () => {
-    const body = await fetch(`${API_URL}/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        query: getChatQuery,
-        variables: { chatId }
-      })
-    });
-    const {
-      data: { chat }
-    } = await body.json();
-    setChat(chat);
-  }, [chatId]);
+  if (!loading) {
+    chat = data.chat;
+  } else {
+    chat = null;
+  }
 
   const onSendMessage = useCallback(
     (content: string) => {
@@ -60,12 +55,18 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
         content
       };
 
-      setChat({
-        ...chat,
-        messages: chat.messages.concat(message)
+      client.writeQuery({
+        query: getChatQuery,
+        variables: { chatId },
+        data: {
+          chat: {
+            ...chat,
+            messages: chat.messages.concat(message)
+          }
+        }
       });
     },
-    [chat]
+    [chat, chatId, client]
   );
 
   if (!chat) {
