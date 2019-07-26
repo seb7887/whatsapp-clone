@@ -5,13 +5,19 @@
     "prettier": true,
     "interface-name": true,
     "deprecation": false,
-    "interface-over-type-literal": true,
+    "interface-over-type-literal": false,
     "no-console": false,
     "object-literal-sort-keys": false,
     "ordered-imports": false,
     "no-var-requires": false,
     "member-access": false,
-    "no-shadowed-variable": false
+    "no-shadowed-variable": false,
+    "ordered-imports": [
+      true,
+      {
+        "grouped-imports": true
+      }
+    ]
   },
   "linterOptions": {
     "exclude": ["node_modules/**/*.ts", "*.json", "**/*.json"]

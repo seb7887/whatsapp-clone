@@ -7,6 +7,7 @@
   "lint-staged": {
     "*.tsx": [
       "tslint",
+      "npm run format",
       "git add"
     ]
   },
@@ -16,7 +17,8 @@
     "prestart": "npm run build",
     "start": "serve -s dist",
     "test": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "format": "prettier --write '**/*.{js,jsx,json,ts,tsx}'"
   },
   "husky": {
     "hooks": {

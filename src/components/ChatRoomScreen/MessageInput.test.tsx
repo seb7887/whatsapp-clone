@@ -1,12 +1,13 @@
-import { createMemoryHistory } from 'history';
-import React from 'react';
 import {
   cleanup,
-  render,
   fireEvent,
+  render,
   wait,
   waitForElement
 } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import React from 'react';
+
 import MessageInput from './MessageInput';
 
 describe('MessageInput;', () => {

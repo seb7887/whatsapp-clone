@@ -1,6 +1,7 @@
+import { cleanup, fireEvent, render, wait } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import React from 'react';
-import { cleanup, render, fireEvent, wait } from '@testing-library/react';
+
 import ChatNav from './ChatNav';
 
 describe('ChatNavbar', () => {

@@ -1,7 +1,8 @@
-import React from 'react';
 import { History } from 'history';
-import ChatsNav from './ChatsNav';
+import React from 'react';
+
 import ChatList from './ChatList';
+import ChatsNav from './ChatsNav';
 
 interface IProps {
   history: History;

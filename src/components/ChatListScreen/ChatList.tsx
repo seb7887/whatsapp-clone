@@ -1,32 +1,18 @@
-import React, { useCallback } from 'react';
-import gql from 'graphql-tag';
-import { useQuery } from 'react-apollo-hooks';
-import moment from 'moment';
-import { History } from 'history';
 import { List, ListItem } from '@material-ui/core';
-import { IChats } from '../../types';
+import { History } from 'history';
+import moment from 'moment';
+import React, { useCallback } from 'react';
+import { useQuery } from 'react-apollo-hooks';
 
-export const getChatsQuery = gql`
-  query GetChats {
-    chats {
-      id
-      name
-      picture
-      lastMessage {
-        id
-        content
-        createdAt
-      }
-    }
-  }
-`;
+import * as queries from '../../graphql/queries';
+import { IChats } from '../../types';
 
 interface IProps {
   history: History;
 }
 
 const ChatList: React.FC<IProps> = ({ history }) => {
-  const { data, loading } = useQuery<any>(getChatsQuery);
+  const { data, loading } = useQuery<any>(queries.chats);
   let chats: any = null;
 
   if (!loading) {

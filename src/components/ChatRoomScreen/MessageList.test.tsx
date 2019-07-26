@@ -1,13 +1,15 @@
-import { createMemoryHistory } from 'history';
-import React from 'react';
 import {
   cleanup,
-  render,
   fireEvent,
-  wait,
-  getByTestId
+  getByTestId,
+  render,
+  wait
 } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import React from 'react';
+
 import { IChatQueryMessage } from '../../types';
+
 import MessageList from './MessageList';
 
 describe('MessagesList', () => {
