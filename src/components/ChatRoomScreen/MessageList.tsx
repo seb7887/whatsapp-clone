@@ -1,10 +1,15 @@
+import moment from 'moment';
 import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
-import moment from 'moment';
-import { IChatQueryMessage } from '../../types';
+
+interface IMessage {
+  id: string | null;
+  content: string | null;
+  createdAt: string | null;
+}
 
 interface IProps {
-  messages: IChatQueryMessage[];
+  messages: IMessage[];
 }
 
 const MessageList: React.FC<IProps> = ({ messages }) => {
@@ -21,7 +26,7 @@ const MessageList: React.FC<IProps> = ({ messages }) => {
 
   return (
     <div className="message--list">
-      {messages.map((message: IChatQueryMessage) => (
+      {messages.map((message: any) => (
         <div
           key={message.id}
           className="message--item"

@@ -4,3 +4,4 @@ package-lock.json
 coverage
 types/graphql.d.ts
 test-results/
+src/graphql/types.tsx
