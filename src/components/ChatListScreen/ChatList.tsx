@@ -2,9 +2,9 @@ import { List, ListItem } from '@material-ui/core';
 import { History } from 'history';
 import moment from 'moment';
 import React, { useCallback } from 'react';
-import { useQuery } from 'react-apollo-hooks';
 
 import * as queries from '../../graphql/queries';
+import { useChatsQuery } from '../../graphql/types';
 import { IChats } from '../../types';
 
 interface IProps {
@@ -12,12 +12,7 @@ interface IProps {
 }
 
 const ChatList: React.FC<IProps> = ({ history }) => {
-  const { data, loading } = useQuery<any>(queries.chats);
-  let chats: any = null;
-
-  if (!loading) {
-    chats = data.chats;
-  }
+  const { data } = useChatsQuery();
 
   const navToChat = useCallback(
     (chat: IChats) => {
@@ -26,9 +21,12 @@ const ChatList: React.FC<IProps> = ({ history }) => {
     [history]
   );
 
-  if (loading) {
+  if (data === undefined || data.chats === undefined) {
     return null;
   }
+
+  const { chats } = data;
+
   return (
     <div className="chat-list">
       <List className="list">

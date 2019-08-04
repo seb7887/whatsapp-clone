@@ -2,33 +2,19 @@ import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import React, { useCallback } from 'react';
-import { useMutation, useQuery } from 'react-apollo-hooks';
 
 import * as fragments from '../../graphql/fragments';
 import * as queries from '../../graphql/queries';
+import {
+  ChatsQuery,
+  useAddMessageMutation,
+  useGetChatQuery
+} from '../../graphql/types';
 import { IChatQueryResult, IChatsResult } from '../../types';
 
 import ChatNav from './ChatNav';
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
-
-const addMessageMutation = gql`
-  mutation AddMessage($chatId: ID!, $content: String!) {
-    addMessage(chatId: $chatId, content: $content) {
-      ...Message
-    }
-  }
-  ${fragments.message}
-`;
-
-const getChatQuery = gql`
-  query GetChat($chatId: ID!) {
-    chat(chatId: $chatId) {
-      ...FullChat
-    }
-  }
-  ${fragments.fullChat}
-`;
 
 interface IProps {
   chatId: string;
@@ -38,20 +24,21 @@ interface IProps {
 type OptionalChatQueryResult = IChatQueryResult | null;
 
 const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
-  const [addMessage] = useMutation(addMessageMutation);
-  const { data, loading } = useQuery<any>(getChatQuery, {
+  const [addMessage] = useAddMessageMutation();
+  const { data, loading } = useGetChatQuery({
     variables: { chatId }
   });
-  let chat: any;
-
-  if (!loading) {
-    chat = data.chat;
-  } else {
-    chat = null;
-  }
 
   const onSendMessage = useCallback(
     (content: string) => {
+      if (data === undefined) {
+        return null;
+      }
+      const chat = data.chat;
+      if (chat === null) {
+        return null;
+      }
+
       addMessage({
         variables: { chatId, content },
         optimisticResponse: {
@@ -84,10 +71,14 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
             return;
           }
 
-          if (fullChat === null) {
+          if (fullChat === null || fullChat.messages === null) {
             return;
           }
-          if (fullChat.messages.some((m: any) => m.id === addMessage.id)) {
+          if (
+            fullChat.messages.some(
+              (currentMessage: any) => currentMessage.id === addMessage.id
+            )
+          ) {
             return;
           }
 
@@ -101,24 +92,25 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
             data: fullChat
           });
 
-          let data;
+          let data: ChatsQuery | null;
           try {
-            data = client.readQuery<IChatsResult>({
+            data = client.readQuery({
               query: queries.chats
             });
           } catch (e) {
             return;
           }
 
-          if (!data || data === null) {
-            return null;
-          }
-          if (!data.chats || data.chats === undefined) {
+          if (!data || !data.chats) {
             return null;
           }
           const chats = data.chats;
 
-          const chatIndex = chats.findIndex((c: any) => c.id === chatId);
+          const chatIndex = chats.findIndex((c: any) => {
+            if (addMessage === null || addMessage.chat === null) {
+              return -1;
+            }
+          });
           if (chatIndex === -1) {
             return;
           }
@@ -135,21 +127,24 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
         }
       });
     },
-    [chat, chatId, addMessage]
+    [data, chatId, addMessage]
   );
 
-  if (!chat) {
+  if (data === undefined) {
     return null;
-  } else {
-    const { messages } = chat;
-    return (
-      <div data-testid="chat" className="room">
-        <ChatNav chat={chat} history={history} />
-        {messages && <MessageList messages={messages} />}
-        <MessageInput onSendMessage={onSendMessage} />
-      </div>
-    );
   }
+  const chat = data.chat;
+
+  if (loading || chat === null) {
+    return null;
+  }
+  return (
+    <div data-testid="chat" className="room">
+      <ChatNav chat={chat} history={history} />
+      {chat.messages && <MessageList messages={chat.messages} />}
+      <MessageInput onSendMessage={onSendMessage} />
+    </div>
+  );
 };
 
 export default ChatRoomScreen;

@@ -4,12 +4,17 @@
   "description": "Whatsapp Clone GraphQL Server",
   "main": "index.js",
   "scripts": {
+    "prestart": "npm run codegen",
     "dev": "nodemon",
-    "start": "ts-node src/index.ts"
+    "start": "ts-node src/index.ts",
+    "codegen": "gql-gen"
   },
   "author": "Sebastian Matias Segura (@seb7887)",
   "license": "ISC",
   "devDependencies": {
+    "@graphql-codegen/cli": "^1.4.0",
+    "@graphql-codegen/typescript": "^1.4.0",
+    "@graphql-codegen/typescript-resolvers": "^1.4.0",
     "@types/node": "^12.0.12",
     "apollo-server-testing": "^2.6.9",
     "nodemon": "^1.19.1",
