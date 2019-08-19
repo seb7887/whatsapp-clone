@@ -1,33 +1,49 @@
-import { defaultDataIdFromObject } from 'apollo-cache-inmemory';
 import gql from 'graphql-tag';
 import { History } from 'history';
 import React, { useCallback } from 'react';
 
 import * as fragments from '../../graphql/fragments';
-import * as queries from '../../graphql/queries';
-import {
-  ChatsQuery,
-  useAddMessageMutation,
-  useGetChatQuery
-} from '../../graphql/types';
-import { IChatQueryResult, IChatsResult } from '../../types';
+import { useAddMessageMutation, useGetChatQuery } from '../../graphql/types';
+import { writeMessage } from '../../services/cache.service';
 
 import ChatNav from './ChatNav';
 import MessageInput from './MessageInput';
 import MessageList from './MessageList';
 
-interface IProps {
+// eslint-disable-next-line
+const getChatQuery = gql`
+  query GetChat($chatId: ID!) {
+    chat(chatId: $chatId) {
+      ...FullChat
+    }
+  }
+  ${fragments.fullChat}
+`;
+
+// eslint-disable-next-line
+const addMessageMutation = gql`
+  mutation AddMessage($chatId: ID!, $content: String!) {
+    addMessage(chatId: $chatId, content: $content) {
+      ...Message
+    }
+  }
+  ${fragments.message}
+`;
+
+interface IChatRoomScreenParams {
   chatId: string;
   history: History;
 }
 
-type OptionalChatQueryResult = IChatQueryResult | null;
-
-const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
-  const [addMessage] = useAddMessageMutation();
+const ChatRoomScreen: React.FC<IChatRoomScreenParams> = ({
+  history,
+  chatId
+}) => {
   const { data, loading } = useGetChatQuery({
     variables: { chatId }
   });
+
+  const [addMessage] = useAddMessageMutation();
 
   const onSendMessage = useCallback(
     (content: string) => {
@@ -49,81 +65,15 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
               .toString(36)
               .substr(2, 9),
             createdAt: new Date(),
+            chat: {
+              __typename: 'Chat',
+              id: chatId
+            },
             content
           }
         },
         update: (client, { data: { addMessage } }) => {
-          type FullChat = { [key: string]: any };
-          let fullChat;
-          const chatIdFromStore = defaultDataIdFromObject(chat);
-
-          if (chatIdFromStore === null) {
-            return;
-          }
-
-          try {
-            fullChat = client.readFragment<FullChat>({
-              id: chatIdFromStore,
-              fragment: fragments.fullChat,
-              fragmentName: 'FullChat'
-            });
-          } catch (e) {
-            return;
-          }
-
-          if (fullChat === null || fullChat.messages === null) {
-            return;
-          }
-          if (
-            fullChat.messages.some(
-              (currentMessage: any) => currentMessage.id === addMessage.id
-            )
-          ) {
-            return;
-          }
-
-          fullChat.messages.push(addMessage);
-          fullChat.lastMessage = addMessage;
-
-          client.writeFragment({
-            id: chatIdFromStore,
-            fragment: fragments.fullChat,
-            fragmentName: 'FullChat',
-            data: fullChat
-          });
-
-          let data: ChatsQuery | null;
-          try {
-            data = client.readQuery({
-              query: queries.chats
-            });
-          } catch (e) {
-            return;
-          }
-
-          if (!data || !data.chats) {
-            return null;
-          }
-          const chats = data.chats;
-
-          const chatIndex = chats.findIndex((c: any) => {
-            if (addMessage === null || addMessage.chat === null) {
-              return -1;
-            }
-          });
-          if (chatIndex === -1) {
-            return;
-          }
-          const chatWhereAdded = chats[chatIndex];
-
-          // The chat will appear at the top of the ChatsList component
-          chats.splice(chatIndex, 1);
-          chats.unshift(chatWhereAdded);
-
-          client.writeQuery({
-            query: queries.chats,
-            data: { chats }
-          });
+          writeMessage(client, addMessage);
         }
       });
     },
@@ -134,10 +84,15 @@ const ChatRoomScreen: React.FC<IProps> = ({ chatId, history }) => {
     return null;
   }
   const chat = data.chat;
+  const loadingChat = loading;
 
-  if (loading || chat === null) {
+  if (loadingChat) {
     return null;
   }
+  if (chat === null) {
+    return null;
+  }
+
   return (
     <div data-testid="chat" className="room">
       <ChatNav chat={chat} history={history} />

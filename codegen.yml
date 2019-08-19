@@ -1,8 +1,5 @@
 schema: ./server/src/schema/typeDefs.graphql
-documents:
-  - ./src/components/**/*.tsx
-  - ./src/graphql/fragments/**/*.ts
-  - ./src/graphql/queries/**/**.ts
+documents: './src/**/*.{tsx,ts}'
 overwrite: true
 generates:
   ./src/graphql/types.tsx:
