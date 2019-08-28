@@ -3,9 +3,9 @@ import React, { useEffect, useRef } from 'react';
 import ReactDOM from 'react-dom';
 
 interface IMessage {
-  id: string | null;
-  content: string | null;
-  createdAt: string | null;
+  id: string;
+  content: string;
+  createdAt: string;
 }
 
 interface IProps {
@@ -29,7 +29,7 @@ const MessageList: React.FC<IProps> = ({ messages }) => {
       {messages.map((message: any) => (
         <div
           key={message.id}
-          className="message--item"
+          className={`message--item--${message.isMine ? 'mine' : 'other'}`}
           data-testid="message-item"
         >
           <div className="message--item__content" data-testid="message-content">

@@ -62,7 +62,7 @@ exports.devServer = ({ host, port } = {}) => ({
     stats: 'errors-only',
     host,
     port,
-    open: true
+    open: false
   }
 });
 

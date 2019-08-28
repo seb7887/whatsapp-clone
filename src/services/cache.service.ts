@@ -46,7 +46,7 @@ export const writeMessage = (client: Client, message: MessageFragment) => {
     data: fullChat
   });
 
-  let data;
+  let data: any;
   try {
     data = client.readQuery({
       query: queries.chats
@@ -61,7 +61,7 @@ export const writeMessage = (client: Client, message: MessageFragment) => {
   if (!data.chats || data.chats === undefined) {
     return null;
   }
-  const chats = data.chats;
+  const chats: any = data.chats;
 
   const chatIndex = chats.findIndex((c: any) => {
     if (message === null || message.chat === null) {
@@ -86,7 +86,7 @@ export const writeMessage = (client: Client, message: MessageFragment) => {
 
 export const useCacheService = () => {
   useMessageAddedSubscription({
-    onSubscriptionData: ({ client, subscriptionData: { data } }) => {
+    onSubscriptionData: ({ client, subscriptionData: { data } }: any) => {
       if (data) {
         writeMessage(client, data.messageAdded);
       }

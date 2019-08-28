@@ -65,6 +65,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreenParams> = ({
               .toString(36)
               .substr(2, 9),
             createdAt: new Date(),
+            isMine: true,
             chat: {
               __typename: 'Chat',
               id: chatId
@@ -72,7 +73,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreenParams> = ({
             content
           }
         },
-        update: (client, { data: { addMessage } }) => {
+        update: (client: any, { data: { addMessage } }: any) => {
           writeMessage(client, addMessage);
         }
       });
@@ -84,6 +85,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreenParams> = ({
     return null;
   }
   const chat = data.chat;
+  console.log(chat);
   const loadingChat = loading;
 
   if (loadingChat) {

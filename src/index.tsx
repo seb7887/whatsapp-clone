@@ -1,9 +1,10 @@
+import { createMuiTheme, MuiThemeProvider } from '@material-ui/core/styles';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo-hooks';
-import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import './styles/main.scss';
+import ReactDOM from 'react-dom';
+
 import App from './App';
+import './styles/main.scss';
 import client from './utils/client';
 
 const theme = createMuiTheme({
