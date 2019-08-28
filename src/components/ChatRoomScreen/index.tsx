@@ -72,7 +72,7 @@ const ChatRoomScreen: React.FC<IChatRoomScreenParams> = ({
             content
           }
         },
-        update: (client, { data: { addMessage } }) => {
+        update: (client: any, { data: { addMessage } }: any) => {
           writeMessage(client, addMessage);
         }
       });

@@ -24,7 +24,6 @@
     }
 
     &::before {
-      background-image: url('../../assets/message-mine.png');
       content: '';
       position: absolute;
       bottom: 3px;
@@ -34,6 +33,26 @@
       background-position: 50% 50%;
       background-repeat: no-repeat;
       background-size: contain;
+    }
+
+    &--mine {
+      float: right;
+      background-color: #dcf8c6;
+
+      &::before {
+        right: -11px;
+        background-image: url(../../assets/message-mine.png);
+      }
+    }
+
+    &--other {
+      float: left;
+      background-color: #fff;
+
+      &::before {
+        left: -11px;
+        background-image: url(../../assets/message-other.png);
+      }
     }
 
     &__content {

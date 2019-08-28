@@ -29,7 +29,7 @@ const MessageList: React.FC<IProps> = ({ messages }) => {
       {messages.map((message: any) => (
         <div
           key={message.id}
-          className="message--item"
+          className={`message--item--${message.isMine ? 'mine' : 'other'}`}
           data-testid="message-item"
         >
           <div className="message--item__content" data-testid="message-content">

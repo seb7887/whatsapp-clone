@@ -1,10 +1,17 @@
-import { createTestClient } from 'apollo-server-testing';
 import { ApolloServer, gql } from 'apollo-server-express';
+import { createTestClient } from 'apollo-server-testing';
+
+import { users } from '../../../../db';
 import schema from '../../schema';
 
 describe('Query.chats', () => {
   it('should fetch all chats', async () => {
-    const server = new ApolloServer({ schema });
+    const server = new ApolloServer({
+      schema,
+      context: () => ({
+        currentUser: users[0]
+      })
+    });
 
     const { query } = createTestClient(server as any);
 

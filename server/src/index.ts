@@ -4,7 +4,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import http from 'http';
 
-import { chats } from '../../db';
+import { chats, users } from '../../db';
 
 import schema from './schema';
 
@@ -20,7 +20,13 @@ app.get('/chats', (req: Request, res: Response) => {
 });
 
 const pubsub = new PubSub();
-const server = new ApolloServer({ schema, context: () => ({ pubsub }) });
+const server = new ApolloServer({
+  schema,
+  context: () => ({
+    currentUser: users.find(u => u.id === '1'),
+    pubsub
+  })
+});
 
 const httpServer = http.createServer(app);
 server.installSubscriptionHandlers(httpServer);
